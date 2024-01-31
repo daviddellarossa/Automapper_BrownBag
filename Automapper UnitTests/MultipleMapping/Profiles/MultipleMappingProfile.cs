@@ -12,8 +12,6 @@ internal class MultipleMapping_Profile : Profile
         CreateMap<Source2, Destination>()
             .IgnoreNonExistingMembers();
     }
-
-
 }
 
 internal static class AutoMapperExtensionMethods
