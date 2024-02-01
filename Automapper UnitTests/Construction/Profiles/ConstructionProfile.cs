@@ -3,49 +3,49 @@ using Automapper_UnitTests.Construction.Types;
 
 namespace Automapper_UnitTests.Construction.Profiles;
 
-internal class EmptyConstruction_Profile : Profile
+internal class DefaultConstruction_Profile : Profile
 {
-    public EmptyConstruction_Profile() // Configuration not valid. Throws.
+    public DefaultConstruction_Profile() // Configuration not valid. Throws.
     {
-        CreateMap<Source, DestinationWithEmptyConstructor>();
+        CreateMap<Source, DestinationWithDefaultConstructor>();
     }
 
 }
-internal class EmptyConstruction_CtorParam_Profile : Profile
+internal class NonDefaultConstruction_CtorParam_Profile : Profile
 {
-    public EmptyConstruction_CtorParam_Profile()
+    public NonDefaultConstruction_CtorParam_Profile()
     {
-        CreateMap<Source, DestinationWithEmptyConstructor>()
-            .ForCtorParam(nameof(DestinationWithEmptyConstructor.OtherValue), opt => opt.MapFrom(src => "From ctor: " + src.Value));
+        CreateMap<Source, DestinationWithDefaultConstructor>()
+            .ForCtorParam(nameof(DestinationWithDefaultConstructor.OtherValue), opt => opt.MapFrom(src => "From ctor: " + src.Value));
     }
 
 }
 
-internal class EmptyConstruction_Member_Profile : Profile
+internal class DefaultConstruction_Member_Profile : Profile
 {
-    public EmptyConstruction_Member_Profile()
+    public DefaultConstruction_Member_Profile()
     {
-        CreateMap<Source, DestinationWithEmptyConstructor>()
+        CreateMap<Source, DestinationWithDefaultConstructor>()
             .ForMember(dst => dst.OtherValue, opt => opt.MapFrom(src => "From member assignment: " + src.Value));
     }
 }
 
-internal class EmptyConstruction_Member_CtorParam_Profile : Profile
+internal class NonDefaultConstruction_Member_CtorParam_Profile : Profile
 {
-    public EmptyConstruction_Member_CtorParam_Profile()
+    public NonDefaultConstruction_Member_CtorParam_Profile()
     {
-        CreateMap<Source, DestinationWithEmptyConstructor>()
+        CreateMap<Source, DestinationWithDefaultConstructor>()
             .ForMember(dst => dst.OtherValue, opt => opt.MapFrom(src => "From member assignment: " + src.Value))
-            .ForCtorParam(nameof(DestinationWithEmptyConstructor.OtherValue), opt => opt.MapFrom(src => "From ctor: " + src.Value));
+            .ForCtorParam(nameof(DestinationWithDefaultConstructor.OtherValue), opt => opt.MapFrom(src => "From ctor: " + src.Value));
     }
 }
 
-internal class EmptyConstruction_CtorParam_Member_Profile : Profile
+internal class NonDefaultConstruction_CtorParam_Member_Profile : Profile
 {
-    public EmptyConstruction_CtorParam_Member_Profile()
+    public NonDefaultConstruction_CtorParam_Member_Profile()
     {
-        CreateMap<Source, DestinationWithEmptyConstructor>()
-            .ForCtorParam(nameof(DestinationWithEmptyConstructor.OtherValue), opt => opt.MapFrom(src => "From ctor: " + src.Value))
+        CreateMap<Source, DestinationWithDefaultConstructor>()
+            .ForCtorParam(nameof(DestinationWithDefaultConstructor.OtherValue), opt => opt.MapFrom(src => "From ctor: " + src.Value))
             .ForMember(dst => dst.OtherValue, opt => opt.MapFrom(src => "From member assignment: " + src.Value));
     }
 }
@@ -54,8 +54,8 @@ internal class NonEmptyConstruction_CtorParam_Profile : Profile
 {
     public NonEmptyConstruction_CtorParam_Profile()
     {
-        CreateMap<Source, DestinationWithNonEmptyConstructor>()
-            .ForCtorParam(nameof(DestinationWithNonEmptyConstructor.OtherValue), opt => opt.MapFrom(src => "From ctor: " + src.Value));
+        CreateMap<Source, DestinationWithNonDefaultConstructor>()
+            .ForCtorParam(nameof(DestinationWithNonDefaultConstructor.OtherValue), opt => opt.MapFrom(src => "From ctor: " + src.Value));
     }
 }
 
@@ -63,7 +63,7 @@ internal class NonEmptyConstruction_Member_Profile : Profile // Configuration no
 {
     public NonEmptyConstruction_Member_Profile()
     {
-        CreateMap<Source, DestinationWithNonEmptyConstructor>()
+        CreateMap<Source, DestinationWithNonDefaultConstructor>()
             .ForMember(dst => dst.OtherValue, opt => opt.MapFrom(src => "From member assignment: " + src.Value));
     }
 }
@@ -75,5 +75,15 @@ internal class Construction_With_ConstructUsing_Profile: Profile
         CreateMap<Source, Destination>()
             .ConstructUsing(x => DestinationFactory.CreateDestination())
             .ForMember(dst => dst.OtherValue, opt => opt.MapFrom(src => src.Value));
+    }
+}
+
+internal class Construction_With_ForMember_And_ForCtorParam_Profile: Profile
+{
+    public Construction_With_ForMember_And_ForCtorParam_Profile()
+    {
+        CreateMap<Source, Destination>()
+            .ForMember(dst => dst.OtherValue, opt => opt.MapFrom(src => "From member: " + src.Value))
+            .ForCtorParam(nameof(Destination.Id), opt => opt.MapFrom(src => "From ctor: " + src.Value));
     }
 }

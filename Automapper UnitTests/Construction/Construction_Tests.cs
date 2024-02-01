@@ -14,20 +14,20 @@ public class Construction_Tests
     [Fact]
     public void DestinationWithEmptyConstructor_Param_NotMapped()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<EmptyConstruction_Profile>());
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<DefaultConstruction_Profile>());
         Assert.ThrowsAny<Exception>(config.AssertConfigurationIsValid);
     }
 
     [Fact]
     public void DestinationWithEmptyConstructor_CtorParam()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<EmptyConstruction_CtorParam_Profile>());
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<NonDefaultConstruction_CtorParam_Profile>());
         config.AssertConfigurationIsValid();
         var mapper = new Mapper(config);
 
         var source = this.fixture.Create<Source>();
 
-        var destination = mapper.Map<DestinationWithEmptyConstructor>(source);
+        var destination = mapper.Map<DestinationWithDefaultConstructor>(source);
 
         destination.OtherValue.Should().EndWith(source.Value);
     }
@@ -35,13 +35,13 @@ public class Construction_Tests
     [Fact]
     public void DestinationWithEmptyConstruction_Member()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<EmptyConstruction_Member_Profile>());
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<DefaultConstruction_Member_Profile>());
         config.AssertConfigurationIsValid();
         var mapper = new Mapper(config);
 
         var source = this.fixture.Create<Source>();
 
-        var destination = mapper.Map<DestinationWithEmptyConstructor>(source);
+        var destination = mapper.Map<DestinationWithDefaultConstructor>(source);
 
         destination.OtherValue.Should().EndWith(source.Value);
     }
@@ -50,13 +50,13 @@ public class Construction_Tests
     // In case both CtorParam and Member are specified, Constructor wins
     public void DestinationWithEmptyConstructor_CtorParam_Member()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<EmptyConstruction_CtorParam_Member_Profile>());
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<NonDefaultConstruction_CtorParam_Member_Profile>());
         config.AssertConfigurationIsValid();
         var mapper = new Mapper(config);
 
         var source = this.fixture.Create<Source>();
 
-        var destination = mapper.Map<DestinationWithEmptyConstructor>(source);
+        var destination = mapper.Map<DestinationWithDefaultConstructor>(source);
 
         destination.OtherValue.Should().Be("From ctor: " + source.Value);
     }
@@ -65,13 +65,13 @@ public class Construction_Tests
     // In case both CtorParam and Member are specified, Constructor wins
     public void DestinationWithEmptyConstructor_Member_CtorParam()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<EmptyConstruction_Member_CtorParam_Profile>());
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<NonDefaultConstruction_Member_CtorParam_Profile>());
         config.AssertConfigurationIsValid();
         var mapper = new Mapper(config);
 
         var source = this.fixture.Create<Source>();
 
-        var destination = mapper.Map<DestinationWithEmptyConstructor>(source);
+        var destination = mapper.Map<DestinationWithDefaultConstructor>(source);
 
         destination.OtherValue.Should().Be("From ctor: " + source.Value);
     }
@@ -86,7 +86,7 @@ public class Construction_Tests
 
         var source = this.fixture.Create<Source>();
 
-        var destination = mapper.Map<DestinationWithNonEmptyConstructor>(source);
+        var destination = mapper.Map<DestinationWithNonDefaultConstructor>(source);
 
         destination.OtherValue.Should().EndWith(source.Value);
     }
@@ -110,5 +110,19 @@ public class Construction_Tests
 
         destination.Id.Should().NotBeNullOrEmpty();
         destination.OtherValue.Should().EndWith(source.Value);
+    }
+
+    [Fact]
+    public void Construction_With_ForMember_And_ForCtorParam()
+    {
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<Construction_With_ForMember_And_ForCtorParam_Profile>());
+        config.AssertConfigurationIsValid();
+        var mapper = new Mapper(config);
+
+        var source = this.fixture.Create<Source>();
+        var destination = mapper.Map<Destination>(source);
+
+        destination.Id.Should().StartWith("From ctor: " + source.Value);
+        destination.OtherValue.Should().Be("From member: " + source.Value);
     }
 }

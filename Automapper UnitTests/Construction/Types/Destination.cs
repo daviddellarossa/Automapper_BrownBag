@@ -1,22 +1,22 @@
 ﻿namespace Automapper_UnitTests.Construction.Types;
 
-internal class DestinationWithNonEmptyConstructor
+internal class DestinationWithNonDefaultConstructor
 {
     public string OtherValue { get; }
-    public DestinationWithNonEmptyConstructor(string otherValue)
+    public DestinationWithNonDefaultConstructor(string otherValue)
     {
         OtherValue = otherValue;
     }
 }
 
-internal class DestinationWithEmptyConstructor
+internal class DestinationWithDefaultConstructor
 {
     public string OtherValue { get; set; }
-    public DestinationWithEmptyConstructor(string otherValue)
+    public DestinationWithDefaultConstructor(string otherValue)
     {
         OtherValue = otherValue;
     }
-    public DestinationWithEmptyConstructor()
+    public DestinationWithDefaultConstructor()
     {
         
     }
